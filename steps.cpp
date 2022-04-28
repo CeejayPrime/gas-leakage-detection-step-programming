@@ -34,9 +34,6 @@ void loop() {
   //  Serial.println("Gas 2 sensor reading" + String(VAL_GAS_2));
   //  Serial.println("Gas 3 sensor reading" + String(VAL_GAS_3));
 
-
-  Serial.println("Sending data...");
-
   endMillis = millis();
   unsigned long sendTelemetryTime = endMillis - startMillis;
 
