@@ -1,44 +1,36 @@
+int GAS_SENSOR_1 = A0;
 
+float VAL_GAS_1;
 
-#define SERIAL_DEBUG_BAUD                 9600
+//unsigned long lastSend;
+//unsigned long endMillis;
+//unsigned long startMillis;
 
-#define GAS_SENSOR_1                      A0
-//#define GAS_SENSOR_2                      A2
-//#define GAS_SENSOR_3                      A6
+#define gasHigh A1
+#define alert 3
 
-#define BUZZER_ALARM                       4
-
-//#define LED_RED
-
-int VAL_GAS_1 = 0;
-//int VAL_GAS_2 = 0;
-//int VAL_GAS_3 = 0;
-
-
-//RTC_DS3231 rtc;
-
-unsigned long lastSend;
-unsigned long endMillis;
-unsigned long startMillis;
+int Tone = 440;
+boolean isGasHigh = false;
 
 void setup () {
   Serial.begin(9600);
-
+  pinMode(gasHigh, INPUT);
+  pinMode(alert, OUTPUT);
 }
 
 void loop() {
+  isGasHigh = digitalRead(gasHigh);
+
   VAL_GAS_1 = analogRead(GAS_SENSOR_1);
-  //  VAL_GAS_2 = analogRead(GAS_SENSOR_2);
-  //  VAL_GAS_3 = analogRead(GAS_SENSOR_3);
-
-  //  Serial.println("Gas 2 sensor reading" + String(VAL_GAS_2));
-  //  Serial.println("Gas 3 sensor reading" + String(VAL_GAS_3));
-
-  endMillis = millis();
-  unsigned long sendTelemetryTime = endMillis - startMillis;
-
-  if (millis() - lastSend > 1000) {
-    Serial.println("Gas 1 sensor reading" + String(VAL_GAS_1));
-    lastSend = millis();
+  gas_Reading = map(VAL_GAS_1, 0, 1023, 60, 0);
+  
+  Serial.println("Gas 1 sensor raw value " + String(VAL_GAS_1));
+  Serial.println("Gas 1 sensor reading " + String(gas_Reading));
+  
+  if (isGasHigh) {
+    Serial.println("gas value is high");
+    tone(alert, Tone);
   }
+  delay(2000);
+
 }
