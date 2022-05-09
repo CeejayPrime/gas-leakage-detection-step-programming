@@ -1,3 +1,18 @@
+#include <ThingsBoard.h>
+
+#include <WiFiEspClient.h>
+#include <WiFiEsp.h>
+#include "SoftwareSerial.h"
+
+#define WIFI_AP                           "WIFI_SSID"
+#define WIFI_PASSWORD                     "WIFI_PASSWORD"
+
+#define TOKEN                             "E8QhroHvcEbBV3qSdeBK"
+#define THINGSBOARD_SERVER                "demo.thingsboard.io"
+
+#define SERIAL_DEBUG_BAUD                 9600
+#define SERIAL_ESP8266_BAUD               9600
+
 int GAS_SENSOR_1 = A0;
 int gas_Reading = 0;
 float VAL_GAS_1;
@@ -12,8 +27,28 @@ float VAL_GAS_1;
 int Tone = 440;
 boolean isGasHigh = false;
 
+SoftwareSerial soft(2, 3);
+
+WiFiEspClient espClient;
+
+ThingsBoard tb(espClient);
+
+int status = WL_IDLE_STATUS;
+
+unsigned long lastSend;
+unsigned long endMillis;
+unsigned long startMillis;
+
 void setup () {
-  Serial.begin(9600);
+  Serial.begin(SERIAL_DEBUG_BAUD);
+  soft.begin(SERIAL_ESP8266_BAUD);
+
+  WiFi.init(&soft);
+
+  if (WiFi.status() == WL_NO_SHIELD) {
+    Serial.println("WiFi shield not present");
+    while (true);
+    
   pinMode(gasHigh, INPUT);
   pinMode(alert, OUTPUT);
 }
@@ -27,10 +62,39 @@ void loop() {
   Serial.println("Gas 1 sensor raw value " + String(VAL_GAS_1));
   Serial.println("Gas 1 sensor reading " + String(gas_Reading));
   
+  if (status != WL_CONNECTED) {
+    Serial.println("Connecting to AP...");
+    Serial.print("Attempting to connect to WPA SSID: ");
+    Serial.println(WIFI_AP);
+
+    status = WiFi.begin(WIFI_AP, WIFI_PASSWORD);
+    return;
+  }
+
+  if (!tb.connected()) {
+    Serial.print("Connected to: ");
+    Serial.print(THINGSBOARD_SERVER);
+    Serial.print(" with token ");
+    Serial.println(TOKEN);
+
+    if (!tb.connect(THINGSBOARD_SERVER, TOKEN)) {
+      Serial.println("Failed to connect");
+      return;
+    }
+  }
+
+  Serial.println("Sending data...");
+
+  endMillis = millis();
+  unsigned long sendTelemetryTime = endMillis - startMillis;
+
+  if (millis() - lastSend > 1000) {
+     
   if (isGasHigh and gas_Reading >= 30) {
     Serial.println("gas value is high");
     tone(alert, Tone);
   }
-  delay(2000);
+    tb.sendTelemetryInt("Gas sensor 1", gas_Reading);
+  }
 
 }
