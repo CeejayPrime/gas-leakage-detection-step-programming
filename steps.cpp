@@ -1,5 +1,5 @@
 int GAS_SENSOR_1 = A0;
-
+int gas_Reading = 0;
 float VAL_GAS_1;
 
 //unsigned long lastSend;
