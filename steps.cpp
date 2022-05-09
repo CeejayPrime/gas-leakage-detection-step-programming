@@ -48,9 +48,10 @@ void setup () {
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");
     while (true);
-    
-  pinMode(gasHigh, INPUT);
-  pinMode(alert, OUTPUT);
+
+    pinMode(gasHigh, INPUT);
+    pinMode(alert, OUTPUT);
+  }
 }
 
 void loop() {
@@ -58,10 +59,10 @@ void loop() {
 
   VAL_GAS_1 = analogRead(GAS_SENSOR_1);
   gas_Reading = map(VAL_GAS_1, 0, 1023, 60, 0);
-  
+
   Serial.println("Gas 1 sensor raw value " + String(VAL_GAS_1));
   Serial.println("Gas 1 sensor reading " + String(gas_Reading));
-  
+
   if (status != WL_CONNECTED) {
     Serial.println("Connecting to AP...");
     Serial.print("Attempting to connect to WPA SSID: ");
@@ -89,11 +90,11 @@ void loop() {
   unsigned long sendTelemetryTime = endMillis - startMillis;
 
   if (millis() - lastSend > 1000) {
-     
-  if (isGasHigh and gas_Reading >= 30) {
-    Serial.println("gas value is high");
-    tone(alert, Tone);
-  }
+
+    if (isGasHigh and gas_Reading >= 30) {
+      Serial.println("gas value is high");
+      tone(alert, Tone);
+    }
     tb.sendTelemetryInt("Gas sensor 1", gas_Reading);
   }
 
