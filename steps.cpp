@@ -27,7 +27,7 @@ void loop() {
   Serial.println("Gas 1 sensor raw value " + String(VAL_GAS_1));
   Serial.println("Gas 1 sensor reading " + String(gas_Reading));
   
-  if (isGasHigh) {
+  if (isGasHigh and gas_Reading >= 30) {
     Serial.println("gas value is high");
     tone(alert, Tone);
   }
