@@ -26,3 +26,10 @@ $ACCESS_TOKEN = the token you copied from step 2
 
 Press enter.
 
+On the devices window, click on your device, in the resulting window, click on "latest telemetry", you will see the information that you just sent.
+
+****Step 3: Create Dashboard:****
+
+Open the dashboard page, click the "+" icon in the top right corner. Select "Create New Dashboard"
+Input dashboard name as the one you wish, then click "Add" to add the dashboard
+Click on the new dashboard you created. On the resulting page, click on the "Open Dashboard" button
