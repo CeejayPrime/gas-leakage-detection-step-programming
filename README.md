@@ -40,3 +40,12 @@ Click on the new dashboard you created. On the resulting page, click on the "Ope
 2. _Click on entity aliases. It is the next icon after the gear icon on the top of this window_
 3. _Click "Add alias"_
 4. _Input alias name, for example, "MyDevice". Select the "Single entity" Filter type. Select "Device" as Type and type "My New" to enable autocomplete. Choose your device from the auto-complete and click on it._
+5. _Click "Add" and then "Save"._
+6. _Finally, click "Apply changes" in the dashboard editor to save the changes. Then you should enter edit mode again._
+
+****3.3: Add table widget****
+1. _Enter edit mode. Click on the "Add new widget" button._
+2. _Select the "Cards" widget bundle. Select the "Latest values" tab. Click on the header of the Entities widget. The "Add Widget" window will appear._
+3. _Click "Add" to add the data source. A widget may have multiple data sources, but we will use only one in this case._
+4. _Select "MyDevice" entity alias. Then click on the input field on the right. The auto-complete with available data points will appear. Select "temperature" data point and click "Add"._
+5. _Resize the widget to make it a little bigger. Just drag the bottom right corner of the widget. You can also play with the advanced settings if you would like to edit the widget._
