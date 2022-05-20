@@ -1,9 +1,9 @@
 # gas-leakage-detection-step-programming
 Step-by-step programming for gas leakage detection
 
-#Hardware required
+# Hardware required
 
-#IoT platform setup
+# IoT platform setup
 We are using the Thingsboard demo IoT platform.
 
 Step 1:Provision Device
