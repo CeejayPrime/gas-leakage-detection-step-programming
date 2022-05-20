@@ -49,3 +49,14 @@ Click on the new dashboard you created. On the resulting page, click on the "Ope
 3. _Click "Add" to add the data source. A widget may have multiple data sources, but we will use only one in this case._
 4. _Select "MyDevice" entity alias. Then click on the input field on the right. The auto-complete with available data points will appear. Select "temperature" data point and click "Add"._
 5. _Resize the widget to make it a little bigger. Just drag the bottom right corner of the widget. You can also play with the advanced settings if you would like to edit the widget._
+
+****3.4: Add Chart Widget****
+1. _Enter Edit mode._
+2. _Click the "Add new widget" icon in the bottom right corner of the screen._
+3. _Click the "Create new widget" icon._
+4. _Select the "Charts" bundle. Scroll down and click on the "Timeseries - Flot" chart widget._
+5. _Click the "Add Datasource" button._
+6. _Select "MyDevice" Alias. Select the "temperature" key. Click "Add"._
+7. _Drag and Drop your widget to the desired space. Resize the widget. Apply changes._
+8. _Publish different telemetry values multiple times Step 2. Note that the widget displays only one minute of data by default._
+9. _Enter Edit mode. Open time selection window. Change the interval and aggregation function. Update the time window and apply changes._
