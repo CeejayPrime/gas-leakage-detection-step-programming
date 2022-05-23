@@ -1,101 +1,65 @@
+#include <WiFi.h>
+#include <MQUnifiedsensor.h>
 #include <ThingsBoard.h>
 
-#include <WiFiEspClient.h>
-#include <WiFiEsp.h>
-#include "SoftwareSerial.h"
+const char* ssid = "Project";
+const char* password = "Project123";
 
-#define WIFI_AP                           "WIFI_SSID"
-#define WIFI_PASSWORD                     "WIFI_PASSWORD"
+#define TOKEN                         "TOKEN"
+#define THINGSBOARD_SERVER            "demo.thingsboard.io"
 
-#define TOKEN                             "E8QhroHvcEbBV3qSdeBK"
-#define THINGSBOARD_SERVER                "demo.thingsboard.io"
+#define pin                           34
+#define LED_PIN                    18
 
-#define SERIAL_DEBUG_BAUD                 9600
-#define SERIAL_ESP8266_BAUD               9600
-
-int GAS_SENSOR_1 = A0;
-int gas_Reading = 0;
-float VAL_GAS_1;
-
-//unsigned long lastSend;
-//unsigned long endMillis;
-//unsigned long startMillis;
-
-#define gasHigh A1
-#define alert 3
-
-int Tone = 440;
-boolean isGasHigh = false;
-
-SoftwareSerial soft(2, 3);
-
-WiFiEspClient espClient;
-
+WiFiClient espClient;
 ThingsBoard tb(espClient);
-
 int status = WL_IDLE_STATUS;
 
 unsigned long lastSend;
 unsigned long endMillis;
 unsigned long startMillis;
 
-void setup () {
-  Serial.begin(SERIAL_DEBUG_BAUD);
-  soft.begin(SERIAL_ESP8266_BAUD);
+float gas_Reading = 0;
+double Gas_Level = (0);
 
-  WiFi.init(&soft);
+void setup() {
+  Serial.begin(9600);
 
-  if (WiFi.status() == WL_NO_SHIELD) {
-    Serial.println("WiFi shield not present");
-    while (true);
-
-    pinMode(gasHigh, INPUT);
-    pinMode(alert, OUTPUT);
+  if (Serial)
+    Serial.println("Serial is open");
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
+  Serial.println();
+  Serial.print("Connected, IP address: ");
+  Serial.println(WiFi.localIP());
+
+  pinMode(LED_PIN, OUTPUT);
 }
 
 void loop() {
-  isGasHigh = digitalRead(gasHigh);
+  Gas_Level = analogRead(pin);
+  gas_Reading = Gas_Level / 68.26;
 
-  VAL_GAS_1 = analogRead(GAS_SENSOR_1);
-  gas_Reading = map(VAL_GAS_1, 0, 1023, 60, 0);
-
-  Serial.println("Gas 1 sensor raw value " + String(VAL_GAS_1));
-  Serial.println("Gas 1 sensor reading " + String(gas_Reading));
-
-  if (status != WL_CONNECTED) {
-    Serial.println("Connecting to AP...");
-    Serial.print("Attempting to connect to WPA SSID: ");
-    Serial.println(WIFI_AP);
-
-    status = WiFi.begin(WIFI_AP, WIFI_PASSWORD);
-    return;
+  if (gas_Reading >= 50) {
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
   }
 
   if (!tb.connected()) {
-    Serial.print("Connected to: ");
-    Serial.print(THINGSBOARD_SERVER);
-    Serial.print(" with token ");
-    Serial.println(TOKEN);
-
+    // Connect to the ThingsBoard
+    tb.connect(THINGSBOARD_SERVER, TOKEN);
     if (!tb.connect(THINGSBOARD_SERVER, TOKEN)) {
       Serial.println("Failed to connect");
-      return;
+    }
+    else {
+      Serial.println("Connected");
     }
   }
-
-  Serial.println("Sending data...");
-
-  endMillis = millis();
-  unsigned long sendTelemetryTime = endMillis - startMillis;
-
-  if (millis() - lastSend > 1000) {
-
-    if (isGasHigh and gas_Reading >= 30) {
-      Serial.println("gas value is high");
-      tone(alert, Tone);
-    }
-    tb.sendTelemetryInt("Gas sensor 1", gas_Reading);
-  }
-
+  tb.sendTelemetryFloat("Gas Level", gas_Reading);
+  delay(200);
 }
